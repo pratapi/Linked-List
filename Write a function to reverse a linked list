@@ -1,0 +1,60 @@
+// Linked List
+#include <iostream>
+using namespace std;
+
+struct Node
+{
+	int val;
+	Node * next;
+};
+
+class LinkedList
+{
+public:
+	LinkedList(Node * head);
+	virtual ~LinkedList();
+	Node * GetHead();
+	void Push(int val);
+	void Print();
+	void Reverse();
+	
+private:
+	Node * head;
+};
+
+LinkedList::LinkedList(Node * head = NULL) : head(head)
+{
+}
+
+LinkedList::~LinkedList()
+{
+}
+
+void LinkedList::Push(int val)
+{
+
+}
+
+Node * LinkedList::GetHead()
+{
+	return head;
+}
+
+void LinkedList::Print()
+{
+	Node * tmp = head;
+	printf("List: \n");
+	while (tmp)
+	{
+		printf("%d ", tmp->val);
+		tmp = tmp->next;
+	}
+	printf("\n");
+}
+
+int main()
+{
+	LinkedList * LnkList = new LinkedList();
+
+	return 0;
+}
