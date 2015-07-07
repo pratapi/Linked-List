@@ -1,4 +1,4 @@
-// Linked List
+// Reverse Linked List
 #include <iostream>
 using namespace std;
 
@@ -32,12 +32,42 @@ LinkedList::~LinkedList()
 
 void LinkedList::Push(int val)
 {
+	Node * new_tmp = new Node;
+	new_tmp->val = val;
+	new_tmp->next = NULL;
 
+	if (head == NULL)
+	{
+		head = new_tmp;
+		return;
+	}
+
+	Node * tmp = head;
+	while (tmp->next != NULL)
+		tmp = tmp->next;
+
+	tmp->next = new_tmp;
 }
 
 Node * LinkedList::GetHead()
 {
 	return head;
+}
+
+void LinkedList::Reverse()
+{
+	Node * current = GetHead();
+	Node * prev = NULL;
+	Node * next = NULL;
+	while (current != NULL)
+	{
+		next = current->next;
+		current->next = prev;
+		prev = current;
+		current = next;
+	}
+	head = prev;
+	
 }
 
 void LinkedList::Print()
@@ -55,6 +85,13 @@ void LinkedList::Print()
 int main()
 {
 	LinkedList * LnkList = new LinkedList();
+	LnkList->Push(1);
+	LnkList->Push(2);
+	LnkList->Push(3);
+
+	LnkList->Print();
+	LnkList->Reverse();
+	LnkList->Print();
 
 	return 0;
 }
