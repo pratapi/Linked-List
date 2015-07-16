@@ -1,1 +1,178 @@
+// Insert in Sorted Linked List
+#include <iostream>
+using namespace std;
+struct Node
+{
+	int val;
+	Node * next;
+};
 
+class LinkedList
+{
+public:
+	LinkedList(Node * head);
+	virtual ~LinkedList();
+	
+	void Push(int val);
+	void Print();
+	int GetLength();
+	bool GetIntersectionNode(int idiff, Node* ihead1, Node* ihead2, Node ** oNode = NULL);
+	Node * GetHead();
+
+private:
+	Node * head;
+};
+
+LinkedList::LinkedList(Node * head = NULL) : head(head)
+{
+}
+
+LinkedList::~LinkedList()
+{
+}
+
+void LinkedList::Push(int val)
+{
+	Node * new_tmp = new Node;
+	new_tmp->val = val;
+	new_tmp->next = NULL;
+
+	if (head == NULL)
+	{
+		head = new_tmp;
+		return;
+	}
+
+	Node * tmp = head;
+	while (tmp->next != NULL)
+		tmp = tmp->next;
+
+	tmp->next = new_tmp;
+}
+
+Node * LinkedList::GetHead()
+{
+	return head;
+}
+
+void LinkedList::Print()
+{
+	Node * tmp = head;
+	printf("List: \n");
+	while (tmp)
+	{
+		printf("%d ", tmp->val);
+		tmp = tmp->next;
+	}
+	printf("\n");
+}
+
+int LinkedList::GetLength()
+{
+	int len = 0;
+
+	Node * tmp = GetHead();
+
+	while (tmp->next != NULL)
+	{
+		len++;
+		tmp = tmp->next;
+	}
+
+	return len;
+}
+
+bool LinkedList::GetIntersectionNode(int idiff, Node* ihead1, Node* ihead2, Node ** oNode)
+{
+	if (idiff == 0 && ihead1 == ihead2) {
+		*oNode = ihead1;
+		return true;
+	}
+
+	Node * tmp_1 = ihead1;
+	Node * tmp_2 = ihead2;
+	while (idiff)
+	{
+		tmp_1 = tmp_1->next;
+		idiff--;
+	}
+
+	while (tmp_1->next != NULL && tmp_2->next != NULL)
+	{
+		if (tmp_1 == tmp_2) {
+			*oNode = tmp_1;
+			return true;
+		}
+		tmp_1 = tmp_1->next;
+		tmp_2 = tmp_2->next;
+	}
+
+	return false;
+}
+
+int main()
+{
+	 LinkedList * LnkList_1 = new LinkedList(); // first linked list
+	LnkList_1->Push(3);
+	LnkList_1->Push(6);
+	LnkList_1->Push(9);
+	LnkList_1->Push(15);
+	LnkList_1->Push(30);
+
+	printf("First Linked List\n");
+	LnkList_1->Print();
+
+	LinkedList * LnkList_2 = new LinkedList(); // second linked list
+	LnkList_2->Push(10);
+	 Node * TEMP_2 = LnkList_2->GetHead();   // Deliberately inserting intersection 
+	 Node * TEMP_1 = LnkList_1->GetHead();
+
+	int val = 3;
+	while (val){
+		TEMP_1 = TEMP_1->next;
+		val--;
+	}
+
+	TEMP_2->next = TEMP_1;
+
+	printf("Second Linked List\n");
+	LnkList_2->Print();
+
+	/*
+		Using difference of node counts
+		1) Get count of the nodes in first list, let count be c1.
+	*/
+	unsigned int c1 = LnkList_1->GetLength();
+
+	/*
+		2) Get count of the nodes in second list, let count be c2.
+	*/
+	
+	unsigned int c2 = LnkList_2->GetLength();
+
+	/*
+		3) Get the difference of counts d = abs(c1 – c2)
+	*/
+	unsigned int diff = 0;
+	if (c1 > c2) {
+		diff = c1 - c2;
+	}
+	else {
+		diff = c2 - c1;
+	}
+
+	/*
+		4) Now traverse the bigger list from the first node till d nodes so that from here onwards both the lists have equal no of nodes.
+		5) Then we can traverse both the lists in parallel till we come across a common node. (Note that getting a common node is done by comparing the address of the nodes)
+	*/
+	
+	Node * interscetion_Node = NULL;
+	if(LnkList_1->GetIntersectionNode(diff, LnkList_1->GetHead(), LnkList_2->GetHead(), &interscetion_Node)) 
+	{
+		printf("Intersection found at %d\n", interscetion_Node->val);
+	}else	{
+		printf("Intersection does not found\n");
+	}
+
+	return 0;
+}
