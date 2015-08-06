@@ -1,0 +1,117 @@
+// Intersection of two Sorted Linked Lists
+
+#include <iostream>
+using namespace std;
+
+struct Node
+{
+	int val;
+	Node * next;
+};
+
+class LinkedList
+{
+public:
+	LinkedList(Node * head);
+	virtual ~LinkedList();
+	Node * GetHead();
+	void Push(int val);
+	void Print();
+	LinkedList * SortedIntersect(Node * headNode_of_first_list = NULL, Node * headNode_of_second_list = NULL);
+private:
+	Node * head;
+};
+
+LinkedList::LinkedList(Node * head = NULL) : head(head)
+{
+}
+
+LinkedList::~LinkedList()
+{
+}
+
+LinkedList * LinkedList::SortedIntersect(Node * headNode_of_first_list, Node * headNode_of_second_list)
+{
+	LinkedList * temp = new LinkedList;
+	
+	while (headNode_of_first_list != NULL && headNode_of_second_list != NULL)
+	{
+		if (headNode_of_first_list->val == headNode_of_second_list->val)
+		{
+			temp->Push(headNode_of_second_list->val);
+			headNode_of_first_list = headNode_of_first_list->next;
+			headNode_of_second_list = headNode_of_second_list->next;
+		}
+		else if (headNode_of_first_list->val < headNode_of_second_list->val)
+		{
+			headNode_of_first_list = headNode_of_first_list->next;
+		} 
+		else
+		{
+			headNode_of_second_list = headNode_of_second_list->next;
+		}
+	}
+	return temp;
+}
+
+void LinkedList::Push(int val)
+{
+	Node * new_tmp = new Node;
+	new_tmp->val = val;
+	new_tmp->next = NULL;
+
+	if (head == NULL)
+	{
+		head = new_tmp;
+		return;
+	}
+
+	Node * tmp = head;
+	while (tmp->next != NULL)
+		tmp = tmp->next;
+
+	tmp->next = new_tmp;
+}
+
+Node * LinkedList::GetHead()
+{
+	return head;
+}
+
+void LinkedList::Print()
+{
+	Node * tmp = head;
+	printf("List: \n");
+	while (tmp)
+	{
+		printf("%d ", tmp->val);
+		tmp = tmp->next;
+	}
+	printf("\n");
+}
+
+int main()
+{
+	LinkedList * LnkList_1 = new LinkedList();
+	LnkList_1->Push(1);
+	LnkList_1->Push(2);
+	LnkList_1->Push(3);
+	LnkList_1->Push(4);
+	LnkList_1->Push(6);
+
+	LnkList_1->Print();
+
+	LinkedList * LnkList_2 = new LinkedList();
+
+	LnkList_2->Push(2);
+	LnkList_2->Push(4);
+	LnkList_2->Push(6);
+	LnkList_2->Push(8);
+
+	LnkList_1->Print();
+
+	LinkedList* result_List = LnkList_1->SortedIntersect(LnkList_1->GetHead(), LnkList_2->GetHead());
+	result_List->Print();
+
+	return 0;
+}
