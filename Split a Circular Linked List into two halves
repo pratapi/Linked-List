@@ -1,0 +1,139 @@
+// Split a Circular Linked List into two halves
+
+#include <iostream>
+using namespace std;
+
+struct Node
+{
+	int val;
+	Node * next;
+};
+
+class LinkedList
+{
+public:
+	LinkedList(Node * head);
+	virtual ~LinkedList();
+	Node * GetHead();
+	void Push(int val);
+	void Print();
+	bool MakeLinkListCircular();
+	void SplitCircularList(LinkedList ** List_1, LinkedList ** List_2);
+
+private:
+	Node * head;
+};
+
+LinkedList::LinkedList(Node * head = NULL) : head(head)
+{
+}
+
+LinkedList::~LinkedList()
+{
+}
+
+void LinkedList::Push(int val)
+{
+	Node * new_tmp = new Node;
+	new_tmp->val = val;
+	new_tmp->next = NULL;
+
+	if (head == NULL)
+	{
+		head = new_tmp;
+		return;
+	}
+
+	Node * tmp = head;
+	while (tmp->next != NULL)
+		tmp = tmp->next;
+
+	tmp->next = new_tmp;
+}
+
+Node * LinkedList::GetHead()
+{
+	return head;
+}
+
+bool LinkedList::MakeLinkListCircular()
+{
+	Node * tmp = GetHead();
+	Node * first = tmp;
+	
+	if (tmp == NULL)
+		return false;
+	while (tmp->next != NULL)
+	{
+		tmp = tmp->next;
+	}
+
+	tmp->next = first;
+	return true;
+
+}
+
+void LinkedList::Print()
+{
+	Node * tmp = GetHead();
+	Node * first = tmp;
+
+	printf("List: \n");
+	printf("%d ", tmp->val);
+	tmp = tmp->next;
+	while (tmp)
+	{
+		if (tmp == first)
+			break;
+		printf("%d ", tmp->val);
+		tmp = tmp->next;
+	}
+	printf("\n");
+}
+
+void LinkedList::SplitCircularList(LinkedList ** List_1, LinkedList ** List_2)
+{
+	Node * first = GetHead();
+	if (!first)
+		return;
+	Node * slow = first;
+	Node * fast = first;
+
+	while (fast != nullptr && fast->next != first)
+	{
+		slow = slow->next;
+		fast = fast->next->next;
+	}
+	Node * Second = slow->next;
+	slow->next = first;
+	fast->next = Second;
+	(*List_1)->head = first;
+	(*List_2)->head = Second;
+
+}
+
+int main()
+{
+	LinkedList * LnkList = new LinkedList();
+	LnkList->Push(1);
+	LnkList->Push(2);
+	LnkList->Push(3);
+	LnkList->Push(4);
+	LnkList->Push(6);
+	LnkList->Push(7);
+	LnkList->Push(8);
+
+	LnkList->MakeLinkListCircular();
+	LnkList->Print();
+
+	LinkedList * list_1 = new LinkedList;
+	LinkedList * list_2 = new LinkedList;;
+	LnkList->SplitCircularList(&list_1, &list_2);
+
+	printf("List 1: \n");
+	list_1->Print();
+	printf("List 2: \n");
+	list_2->Print();
+
+	return 0;
+}
