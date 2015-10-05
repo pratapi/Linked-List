@@ -1,0 +1,122 @@
+// Rotate Linked List anti clock wise
+
+#include <iostream>
+using namespace std;
+
+struct Node
+{
+	int val;
+	Node * next;
+};
+
+class LinkedList
+{
+public:
+	LinkedList(Node * head);
+	virtual ~LinkedList();
+	Node * GetHead();
+	void Push(int val);
+	void Print();
+	bool Anticlock_Rotate_by_k(int k);
+
+private:
+	Node * head;
+};
+
+LinkedList::LinkedList(Node * head = NULL) : head(head)
+{
+}
+
+LinkedList::~LinkedList()
+{
+}
+
+void LinkedList::Push(int val)
+{
+	Node * new_tmp = new Node;
+	new_tmp->val = val;
+	new_tmp->next = NULL;
+
+	if (head == NULL)
+	{
+		head = new_tmp;
+		return;
+	}
+
+	Node * tmp = head;
+	while (tmp->next != NULL)
+		tmp = tmp->next;
+
+	tmp->next = new_tmp;
+}
+
+Node * LinkedList::GetHead()
+{
+	return head;
+}
+
+bool LinkedList::Anticlock_Rotate_by_k(int k)
+{
+	if (k == 0) return false;
+
+	Node * current = this->GetHead();
+
+	int count = 1;
+	while (count < k && current != NULL)
+	{
+		current = current->next;
+		count++;
+	}
+
+	if (current == nullptr) return false;
+
+	Node * kthNode = current;
+
+	while (current->next != NULL)
+	{
+		current = current->next;
+	}
+
+	current->next = head;
+	head = kthNode->next;
+	kthNode->next = NULL;
+
+	return true;
+}
+
+void LinkedList::Print()
+{
+	Node * tmp = head;
+	printf("List: \n");
+	while (tmp)
+	{
+		printf("%d ", tmp->val);
+		tmp = tmp->next;
+	}
+	printf("\n");
+}
+
+int main()
+{
+	LinkedList * LnkList = new LinkedList();
+	LnkList->Push(1);
+	LnkList->Push(2);
+	LnkList->Push(3);
+	LnkList->Push(4);
+	LnkList->Push(5);
+	LnkList->Push(6);
+
+	LnkList->Print();
+
+	if (LnkList->Anticlock_Rotate_by_k(3))
+	{
+		printf("Rotation Done\n");
+	}
+	else
+	{
+		printf("Rotation Has Failed\n");
+	}
+
+	LnkList->Print();
+	return 0;
+}
