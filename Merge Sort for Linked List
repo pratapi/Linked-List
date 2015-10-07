@@ -1,0 +1,162 @@
+// Merge Sort 
+
+#include <iostream>
+using namespace std;
+
+struct Node
+{
+	int val;
+	Node * next;
+};
+
+class LinkedList
+{
+public:
+	LinkedList(Node * head);
+	virtual ~LinkedList();
+	Node * GetHead();
+	void Push(int val);
+	void Print();
+	void MergeSort(Node ** src);
+
+	// Utility function
+	void Split_prt1_prt2( Node * tmp, Node ** prt_1, Node ** prt_2);
+	Node * SortedMerge(Node * prt_1, Node * prt_2);
+
+private:
+	Node * head;
+};
+
+LinkedList::LinkedList(Node * head = NULL) : head(head)
+{
+}
+
+LinkedList::~LinkedList()
+{
+}
+
+void LinkedList::Push(int val)
+{
+	Node * new_tmp = new Node;
+	new_tmp->val = val;
+	new_tmp->next = NULL;
+
+	if (head == NULL)
+	{
+		head = new_tmp;
+		return;
+	}
+
+	Node * tmp = head;
+	while (tmp->next != NULL)
+		tmp = tmp->next;
+
+	tmp->next = new_tmp;
+}
+
+Node * LinkedList::GetHead()
+{
+	return head;
+}
+
+void LinkedList::MergeSort(Node ** src)
+{
+	Node * tmp = *src;
+	Node * prt_1 = NULL;
+	Node * prt_2 = NULL;
+
+	if (tmp == NULL || tmp->next == NULL) return;
+
+	Split_prt1_prt2( tmp ,&prt_1, &prt_2);
+
+	MergeSort(&prt_1);
+	MergeSort(&prt_2);
+
+	*src = SortedMerge(prt_1, prt_2);
+
+}
+
+void LinkedList::Split_prt1_prt2(Node * tmp, Node ** prt_1, Node ** prt_2)
+{
+	Node * slow = NULL;
+	Node * fast = NULL;
+
+	if (tmp == NULL || tmp->next == NULL)
+	{
+		/* length < 2 cases */
+		*prt_1 = head;
+		*prt_2 = NULL;
+	}
+	else
+	{
+		slow = tmp;
+		fast = tmp->next;
+		while (fast != NULL)
+		{
+			fast = fast->next;
+			if (fast != NULL)
+			{
+				slow = slow->next;
+				fast = fast->next;
+			}
+		}
+
+		*prt_1 = tmp;
+		*prt_2 = slow->next;
+		slow->next = NULL;
+	}
+}
+
+Node * LinkedList::SortedMerge(Node * prt_1, Node * prt_2)
+{
+	Node* res = NULL;
+
+	if (prt_1 == NULL) return prt_2;
+	else if (prt_2 == NULL)  return prt_1;
+
+	if (prt_1->val <= prt_2->val)
+	{
+		res = prt_1;
+		res->next = SortedMerge(prt_1->next, prt_2);
+	}
+	else
+	{
+		res = prt_2;
+		res->next = SortedMerge(prt_1 ,prt_2->next);
+	}
+
+	return res;
+}
+
+void LinkedList::Print()
+{
+	Node * tmp = head;
+	printf("List: \n");
+	while (tmp)
+	{
+		printf("%d ", tmp->val);
+		tmp = tmp->next;
+	}
+	printf("\n");
+}
+
+int main()
+{
+	LinkedList * LnkList = new LinkedList();
+	LnkList->Push(1);
+	LnkList->Push(8);
+	LnkList->Push(5);
+	LnkList->Push(3);
+	LnkList->Push(2);
+	LnkList->Push(7);
+
+	LnkList->Print();
+
+	Node * src = LnkList->GetHead();
+
+	LnkList->MergeSort(&src);
+
+	LnkList->Print();
+
+	return 0;
+}
