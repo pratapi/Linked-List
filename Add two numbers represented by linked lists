@@ -1,0 +1,124 @@
+// Add two numbers represented by linked list 3->5->0 (350) & 8->2->0->9 (8209) = 8->5->5->9 (8559) 
+
+#include <iostream>
+using namespace std;
+
+struct Node
+{
+	int val;
+	Node * next;
+};
+
+class LinkedList
+{
+public:
+	LinkedList(Node * head);
+	virtual ~LinkedList();
+	Node * GetHead();
+	void Push(int val);
+	void Print();
+
+private:
+	Node * head;
+};
+
+LinkedList::LinkedList(Node * head = NULL) : head(head)
+{
+}
+
+LinkedList::~LinkedList()
+{
+}
+
+void LinkedList::Push(int val)
+{
+	Node * new_tmp = new Node;
+	new_tmp->val = val;
+	new_tmp->next = NULL;
+
+	if (head == NULL)
+	{
+		head = new_tmp;
+		return;
+	}
+
+	Node * tmp = head;
+	while (tmp->next != NULL)
+		tmp = tmp->next;
+
+	tmp->next = new_tmp;
+}
+
+Node * LinkedList::GetHead()
+{
+	return head;
+}
+
+void LinkedList::Print()
+{
+	Node * tmp = head;
+	printf("List: \n");
+	while (tmp)
+	{
+		printf("%d ", tmp->val);
+		tmp = tmp->next;
+	}
+	printf("\n");
+}
+
+static LinkedList * Add_Two_Numbers( LinkedList * list_1, LinkedList * list_2)
+{
+	LinkedList * res = new LinkedList();
+
+	// Get the Size of list
+	int l1 = List_Size(list_1);
+	int l2 = List_Size(list_2);
+
+	if (l1 == l2)
+	{
+		sameSizeAddition(list_1, list_2, 0);
+	}
+	else if ()
+	{
+		 
+	}
+	else
+	{
+
+	}
+	return res;
+}
+
+ int List_Size(LinkedList * list)
+{
+	Node * tmp = list->GetHead();
+	unsigned int size = 0;
+	while (tmp->next != NULL)
+	{
+		size++;
+		tmp = tmp->next;
+	}
+	return size;
+}
+
+int main()
+{
+	// List 1
+	LinkedList * LnkList_1 = new LinkedList();
+	LnkList_1->Push(3);
+	LnkList_1->Push(5);
+	LnkList_1->Push(0);
+
+	LnkList_1->Print();
+
+	// List 2
+	LinkedList * LnkList_2 = new LinkedList();
+	LnkList_2->Push(8);
+	LnkList_2->Push(2);
+	LnkList_2->Push(0);
+	LnkList_2->Push(9);
+
+	LnkList_2->Print();
+
+	return 0;
+}
