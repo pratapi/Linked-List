@@ -17,6 +17,10 @@ public:
 	Node * GetHead();
 	void Push(int val);
 	void Print();
+	int List_Size(LinkedList * list);
+	LinkedList * Add_Two_Numbers(LinkedList * list_1, LinkedList * list_2);
+	Node * SameSizeAddition(Node * list_1, Node * list_2, int * carry);
+	void AddCarryToRemaining(Node* list, Node* cur, int* carry, LinkedList ** res);
 
 private:
 	Node * head;
@@ -66,30 +70,83 @@ void LinkedList::Print()
 	printf("\n");
 }
 
-static LinkedList * Add_Two_Numbers( LinkedList * list_1, LinkedList * list_2)
+LinkedList * LinkedList::Add_Two_Numbers( LinkedList * list_1, LinkedList * list_2)
 {
 	LinkedList * res = new LinkedList();
+
+	if (list_1->GetHead() == NULL )
+	{
+		res = list_2;
+	}
+
+	if (list_2->GetHead() == NULL)
+	{
+		res = list_1;
+	}
 
 	// Get the Size of list
 	int l1 = List_Size(list_1);
 	int l2 = List_Size(list_2);
-
+	int carry = 0;
 	if (l1 == l2)
 	{
-		sameSizeAddition(list_1, list_2, 0);
+		 res->head = SameSizeAddition(list_1->GetHead(), list_2->GetHead(), &carry);
+		 if (carry)
+		 {
+			 Node * tmp = res->GetHead()->next;
+			 Node * newNode = new Node();
+			 newNode->val = carry;
+			 res->head->next = newNode;
+			 newNode->next = tmp;
+		 }
 	}
-	else if ()
+	else if (l1 < l2)
 	{
-		 
+		int diff = l2 - l1;
+		Node * tmp = list_2->GetHead();
+		// move diff in biggerlist;
+		while (diff != 0)
+		{
+			tmp = tmp->next;
+			diff--;
+		}
+		res->head = SameSizeAddition(list_1->GetHead(), tmp, &carry);
+		AddCarryToRemaining(list_2->GetHead(), tmp, &carry, &res);
+	
 	}
-	else
+	else if (l1 > l2 )
 	{
+		int diff = l2 - l1;
+		Node * tmp = list_2->GetHead();
+		while (diff != 0)
+		{
+			tmp = tmp->next;
+			diff--;
+		}
+		SameSizeAddition(tmp, list_2->GetHead(), &carry);
+	}
 
-	}
 	return res;
 }
 
- int List_Size(LinkedList * list)
+Node * LinkedList::SameSizeAddition(Node * list_1, Node * list_2, int * carry)
+{
+	if (list_1 == NULL)
+		return NULL;
+	int sum;
+	Node * res = new Node();
+	res->next = SameSizeAddition(list_1->next, list_2->next, carry);
+	
+	sum = list_1->val + list_2->val + *carry;
+	*carry = sum / 10;
+	sum = sum % 10;
+
+	res->val = sum;
+
+	return res;
+}
+ 
+int LinkedList::List_Size(LinkedList * list)
 {
 	Node * tmp = list->GetHead();
 	unsigned int size = 0;
@@ -101,11 +158,28 @@ static LinkedList * Add_Two_Numbers( LinkedList * list_1, LinkedList * list_2)
 	return size;
 }
 
+void LinkedList::AddCarryToRemaining(Node* list, Node* cur, int* carry, LinkedList ** res)
+{
+	int sum;
+
+	// If diff. number of nodes are not traversed, add carry
+	if (list != cur)
+	{
+		AddCarryToRemaining(list->next, cur, carry, res);
+
+		sum = list->val + *carry;
+		*carry = sum / 10;
+		sum %= 10;
+
+		Node * tmp = *res->
+	}
+}
+
 int main()
 {
 	// List 1
 	LinkedList * LnkList_1 = new LinkedList();
-	LnkList_1->Push(3);
+	LnkList_1->Push(1);
 	LnkList_1->Push(5);
 	LnkList_1->Push(0);
 
@@ -113,12 +187,16 @@ int main()
 
 	// List 2
 	LinkedList * LnkList_2 = new LinkedList();
-	LnkList_2->Push(8);
-	LnkList_2->Push(2);
+	LnkList_2->Push(1);
+	LnkList_2->Push(5);
 	LnkList_2->Push(0);
-	LnkList_2->Push(9);
+	//LnkList_2->Push(9);
 
 	LnkList_2->Print();
+
+	LinkedList * res = LnkList_1->Add_Two_Numbers(LnkList_1, LnkList_2);
+
+	res->Print();
 
 	return 0;
 }
