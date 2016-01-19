@@ -1,0 +1,64 @@
+// XOR Linked List : Doubly Linked List
+#include <iostream>
+using namespace std;
+
+struct Node
+{
+	int data;
+	Node* npx; // XOR of next and previous node
+};
+
+Node* XOR(Node* prev, Node* next)
+{
+	return (Node*)((unsigned int)prev ^ (unsigned int)next);
+}
+
+// Insert at the beigining of linked list
+void insert(Node ** head, int value)
+{
+	Node * node = new Node;
+	node->data = value;
+
+	node->npx = XOR(*head, NULL);
+
+	if (*head != NULL)
+	{
+		Node* next = XOR((*head)->npx, NULL);
+		(*head)->npx = XOR(node, next);
+	}
+
+	*head = node;
+}
+
+void printList(Node * head)
+{
+	Node * prev = NULL;
+	Node * next = NULL;
+	Node * curr = head;
+
+	printf("Following are the nodes of Linked List: \n");
+
+	while (curr != NULL)
+	{
+		printf_s("%d  \n", curr->data);
+
+		next = XOR(prev, curr->npx);
+
+		prev = curr;
+		curr = next;
+	}
+}
+
+int main()
+{
+	Node *head = NULL;
+	insert(&head, 10);
+	insert(&head, 20);
+	insert(&head, 30);
+	insert(&head, 40);
+
+	// print the created list
+	printList(head);
+
+	return 0;
+}
